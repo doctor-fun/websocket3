@@ -12,7 +12,7 @@ import java.io.Serializable;
 public class ResponseMessage implements Serializable {
     //序列化id To do
     private Integer messageid;
-    private Instructor instructor;
+    private String direction;
 
 
 }

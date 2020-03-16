@@ -9,7 +9,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
-import com.example.messagingstompwebsocket.pojo.Greeting;
+import com.example.messagingstompwebsocket.pojo.ResponseMessage;
 import com.example.messagingstompwebsocket.pojo.HelloMessage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -31,7 +31,7 @@ import org.springframework.web.socket.sockjs.client.Transport;
 import org.springframework.web.socket.sockjs.client.WebSocketTransport;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class GreetingIntegrationTests {
+	public class GreetingIntegrationTests {
 
 	@LocalServerPort
 	private int port;
@@ -53,7 +53,7 @@ public class GreetingIntegrationTests {
 	}
 
 	@Test
-	public void getGreeting() throws Exception {
+	public void getResponseMessage() throws Exception {
 
 		final CountDownLatch latch = new CountDownLatch(1);
 		final AtomicReference<Throwable> failure = new AtomicReference<>();
@@ -65,14 +65,14 @@ public class GreetingIntegrationTests {
 				session.subscribe("/topic/DirectionOrder", new StompFrameHandler() {
 					@Override
 					public Type getPayloadType(StompHeaders headers) {
-						return Greeting.class;
+						return ResponseMessage.class;
 					}
 
 					@Override
 					public void handleFrame(StompHeaders headers, Object payload) {
-						Greeting greeting = (Greeting) payload;
+						ResponseMessage responseMessage = (ResponseMessage) payload;
 						try {
-							assertEquals("Hello, Spring!", greeting.getContent());
+							assertEquals("left", responseMessage.getDirection());
 						} catch (Throwable t) {
 							failure.set(t);
 						} finally {
@@ -98,7 +98,7 @@ public class GreetingIntegrationTests {
 			}
 		}
 		else {
-			fail("Greeting not received");
+			fail("ResponseMessage not received");
 		}
 
 	}
